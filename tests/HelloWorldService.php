@@ -9,7 +9,7 @@ class HelloWorldService implements DeclarerInterface {
 
     private $name;
 
-    public function __construct($name) {
+    public function __construct(string $name) {
         $this->name = $name;
     }
 
@@ -17,7 +17,11 @@ class HelloWorldService implements DeclarerInterface {
         return ['container'];
     }
 
-    public function getName() {
+    public function setName(string $name) {
+        $this->name = $name;
+    }
+
+    public function getName(): string {
         return $this->name;
     }
 

@@ -21,6 +21,20 @@ class Container {
         }
     }
 
+    public function extend($name, $extender) {
+        if (isset($this->services[$name])) {
+            $this->services[$name] = $this->produce($extender);
+        } elseif (isset($this->initializers[$name])) {
+            $initializer = $this->initializers[$name];
+            $this->initializers[$name] = function () use ($extender, $initializer, $name) {
+                $this->services[$name] = $this->produce($initializer);
+                return $this->inject($extender);
+            };
+        } else {
+            throw new Exception("Cannot extend unknown service $name");
+        }
+    }
+
     public function value($value) {
         return new Value($value);
     }

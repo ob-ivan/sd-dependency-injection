@@ -14,7 +14,7 @@ class ContainerTest extends TestCase {
             ],
             'container'
         );
-        $serviceName = 'hello_world';
+        $serviceName = 'helloWorld';
         $className = HelloWorldService::class;
         $container->register($serviceName, $className);
         $service = $container->get($serviceName);
@@ -29,5 +29,24 @@ class ContainerTest extends TestCase {
         $container->register('b', function ($a) { return 2; });
         $this->expectException(Exception::class);
         $container->get('a');
+    }
+
+    public function testExtend() {
+        $name1 = 'Jar Jar Binks';
+        $name2 = 'Palpatine';
+        $container = new Container(
+            [
+                'name' => $name1,
+            ],
+            'container'
+        );
+        $serviceName = 'helloWorld';
+        $container->register($serviceName, HelloWorldService::class);
+        $container->extend($serviceName, function ($helloWorld) use ($name2) {
+            $helloWorld->setName($name2);
+            return $helloWorld;
+        });
+        $service = $container->get($serviceName);
+        $this->assertEquals($name2, $service->getName(), 'Must return modified name');
     }
 }

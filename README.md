@@ -26,6 +26,8 @@ into arbitrary code.
 - ConsumerInitializer = ClassName | Consumer
 - ServiceInitializer = ConsumerInitializer | Value
 
+Construction
+------------
 Container is initialized with raw values, no Initalizers allowed:
 
 ```php
@@ -40,6 +42,8 @@ You can set a name which will be used to refer to container itself:
 $container = new SD\DependencyInjection\Container([], 'container');
 ```
 
+Registering services
+--------------------
 Services are registered with ServiceInitializers:
 
 ```php
@@ -62,6 +66,19 @@ $container->register('helloWorld', function ($name) {
 $container->register('name', $container->value('Skywalker'));
 ```
 
+You can extend registered services:
+
+```php
+$container->register('currency', SD\Currency\Repository::class);
+$container->extend('currency', function ($container, $currency) {
+    $store = $container->produce(SD\CurrencyStore\Wpdb::class);
+    $currency->setStore($store);
+    return $currency;
+});
+```
+
+Consumer production
+-------------------
 Consumers are produced with ConsumerInitializers (Value is not supported):
 
 ```php
