@@ -1,0 +1,13 @@
+{
+    "name": "ob-ivan/sd-dependency-injection",
+    "autoload": {
+        "psr-4": {
+            "SD\\DependencyInjection\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests/"
+        }
+    }
+}
