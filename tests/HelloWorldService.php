@@ -1,8 +1,11 @@
 <?php
 namespace tests;
 
-class HelloWorldService implements SD\DependencyInjection\DeclarerInterface {
-    use SD\DependencyInjection\ContainerAwareTrait;
+use SD\DependencyInjection\DeclarerInterface;
+use SD\DependencyInjection\ContainerAwareTrait;
+
+class HelloWorldService implements DeclarerInterface {
+    use ContainerAwareTrait;
 
     private $name;
 
