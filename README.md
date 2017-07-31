@@ -1,5 +1,15 @@
 Registers services and injects them into consumers.
 
+Installation
+============
+
+```bash
+composer require ob-ivan/sd-dependency-injection
+```
+
+Usage
+=====
+
 Three types of dependency injection are supported:
 - **Setter injection** aka **Interface injection** - given an Instance implementing DeclarerInterface
   call a setter for each declared dependency.
@@ -12,9 +22,9 @@ Three types of dependency injection are supported:
 You can use container to register services, or to produce consumers, or to inject dependencies
 into arbitrary code.
 
-    Consumer = Function | Instance
-    ConsumerInitializer = ClassName | Consumer
-    ServiceInitializer = ConsumerInitializer | Value
+- Consumer = Function | Instance
+- ConsumerInitializer = ClassName | Consumer
+- ServiceInitializer = ConsumerInitializer | Value
 
 Container is initialized with raw values, no Initalizers allowed:
 
@@ -76,4 +86,13 @@ you use the power of dependency injection:
 
 ```php
 $legacyConsumer = new LegacyConsumer($container->get('brand_new_service'));
+```
+
+Development
+===========
+To run tests:
+
+```bash
+composer install
+vendor/bin/phpunit
 ```
