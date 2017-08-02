@@ -6,6 +6,11 @@ class Container {
     private $initializers = [];
     private $services = [];
 
+    /**
+     *  @var $usedNames string[] Already initialized names, used to detect cyclic dependencies.
+    **/
+    private $usedNames = [];
+
     public function __construct(array $config = [], $selfName = '') {
         $this->services = $config;
         if ($selfName) {
@@ -15,7 +20,7 @@ class Container {
 
     public function connect(ProviderInterface $provider) {
         $this->initializers[$provider->getServiceName()] = function () use ($provider) {
-            $this->inject($provider);
+            $this->injectRecursive($provider);
             return $provider->provide();
         };
     }
@@ -47,10 +52,22 @@ class Container {
     }
 
     public function produce($initializer) {
+        $this->usedNames = [];
         return $this->produceRecursive($initializer, []);
     }
 
     public function inject($consumer) {
+        $this->usedNames = [];
+        return $this->injectRecursive($consumer, []);
+    }
+
+    // Public for compatibility mode only.
+    public function get($name) {
+        $this->usedNames = [];
+        return $this->getRecursive($name);
+    }
+
+    private function injectRecursive($consumer) {
         if (is_callable($consumer)) {
             $parameters = $this->getParameterValues(new \ReflectionFunction($consumer));
             return $consumer(...$parameters);
@@ -60,23 +77,18 @@ class Container {
         }
     }
 
-    // Public for compatibility mode only.
-    public function get($name) {
-        return $this->getRecursive($name, []);
-    }
-
-    private function produceRecursive($initializer, array $names) {
+    private function produceRecursive($initializer) {
         if (is_string($initializer)) {
             $class = new \ReflectionClass($initializer);
             $constructor = $class->getConstructor();
             if ($constructor) {
-                $parameters = $this->getParameterValues($constructor, $names);
+                $parameters = $this->getParameterValues($constructor);
                 $instance = new $initializer(...$parameters);
             } else {
                 $instance = new $initializer();
             }
         } elseif (is_callable($initializer)) {
-            $parameters = $this->getParameterValues(new \ReflectionFunction($initializer), $names);
+            $parameters = $this->getParameterValues(new \ReflectionFunction($initializer));
             $instance = $initializer(...$parameters);
         } else {
             $instance = $initializer;
@@ -95,13 +107,13 @@ class Container {
         return $object;
     }
 
-    private function injectByNames($object, array $names) {
-        foreach ($names as $name) {
+    private function injectByNames($object, array $declaredNames) {
+        foreach ($declaredNames as $name) {
             $setter = 'set' . implode('', array_map('ucfirst', explode('_', $name)));
             if (!method_exists($object, $setter)) {
                 throw new Exception("Object declared $name dependency, but setter method $setter was not found");
             }
-            $object->$setter($this->get($name));
+            $object->$setter($this->getRecursive($name));
         }
         return $object;
     }
@@ -110,27 +122,26 @@ class Container {
      * Return an initialized service.
      *
      *  @param $name string
-     *  @param $names string[] Already initialized names, used to detect cyclic dependencies.
      *  @return mixed
     **/
-    private function getRecursive(string $name, array $names) {
+    private function getRecursive(string $name) {
         if (!isset($this->services[$name])) {
-            if (in_array($name, $names)) {
+            if (in_array($name, $this->usedNames)) {
                 throw new Exception("Cyclic dependency found while resolving $name");
             }
-            $names[] = $name;
+            $this->usedNames[] = $name;
             if (!isset($this->initializers[$name])) {
                 throw new Exception("No initializer for $name");
             }
-            $this->services[$name] = $this->produceRecursive($this->initializers[$name], $names);
+            $this->services[$name] = $this->produceRecursive($this->initializers[$name]);
         }
         return $this->services[$name];
     }
 
-    private function getParameterValues(\ReflectionFunctionAbstract $function, array $names = []) {
+    private function getParameterValues(\ReflectionFunctionAbstract $function) {
         return array_map(
-            function ($parameter) use ($names) {
-                return $this->getRecursive($parameter->getName(), $names);
+            function ($parameter) {
+                return $this->getRecursive($parameter->getName());
             },
             $function->getParameters()
         );
