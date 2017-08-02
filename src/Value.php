@@ -10,6 +10,6 @@ class Value {
     }
 
     public function getValue() {
-        return $value;
+        return $this->value;
     }
 }

@@ -6,6 +6,15 @@ use SD\DependencyInjection\Container;
 use SD\DependencyInjection\Exception;
 
 class ContainerTest extends TestCase {
+    public function testRegisterValue() {
+        $container = new Container();
+        $name = 'name';
+        $value = new \stdClass();
+        $container->register($name, $container->value($value));
+        $result = $container->get($name);
+        $this->assertEquals($value, $result, 'Must return wrapped value as is');
+    }
+
     public function testRegisterClassName() {
         $name = 'Padme';
         $container = new Container(
