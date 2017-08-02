@@ -8,7 +8,7 @@ trait AutoDeclarerTrait {
     /**
      * @return string[]
     **/
-    public function autoDeclareDependencies() {
+    public function autoDeclareDependencies(): array {
         $class = new \ReflectionClass($this);
         $deps = [];
         foreach ($class->getDefaultProperties () as $name => $value) {

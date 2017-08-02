@@ -90,7 +90,7 @@ class Container {
             $object = $this->injectByNames($object, $object->autoDeclareDependencies());
         }
         if ($object instanceof DeclarerInterface) {
-            $object = $this->injectByNames($object, $object->declareDependencies());
+            $object = $this->injectByNames($object, (array)$object->declareDependencies());
         }
         return $object;
     }

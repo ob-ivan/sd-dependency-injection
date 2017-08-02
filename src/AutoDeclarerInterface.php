@@ -5,5 +5,5 @@ interface AutoDeclarerInterface {
     /**
      * @return string[]
     **/
-    public function autoDeclareDependencies();
+    public function autoDeclareDependencies(): array;
 }
