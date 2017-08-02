@@ -19,10 +19,10 @@ class Container {
     }
 
     public function connect(ProviderInterface $provider) {
-        $this->initializers[$provider->getServiceName()] = function () use ($provider) {
+        $this->register($provider->getServiceName(), function () use ($provider) {
             $this->injectRecursive($provider);
             return $provider->provide();
-        };
+        });
     }
 
     public function register($name, $initializer) {
@@ -53,12 +53,12 @@ class Container {
 
     public function produce($initializer) {
         $this->usedNames = [];
-        return $this->produceRecursive($initializer, []);
+        return $this->produceRecursive($initializer);
     }
 
     public function inject($consumer) {
         $this->usedNames = [];
-        return $this->injectRecursive($consumer, []);
+        return $this->injectRecursive($consumer);
     }
 
     // Public for compatibility mode only.

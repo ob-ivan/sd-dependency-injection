@@ -9,4 +9,8 @@ trait ContainerAwareTrait {
     public function setContainer(Container $container) {
         $this->container = $container;
     }
+
+    private function getContainer(): Container {
+        return $this->container;
+    }
 }
