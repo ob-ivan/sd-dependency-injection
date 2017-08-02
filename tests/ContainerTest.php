@@ -49,4 +49,20 @@ class ContainerTest extends TestCase {
         $service = $container->get($serviceName);
         $this->assertEquals($name2, $service->getName(), 'Must return modified name');
     }
+
+    public function testConnect() {
+        $name = 'Luke Skywalker';
+        $container = new Container(
+            [
+                'name' => $name,
+            ],
+            'container'
+        );
+        $provider = new LegacyProvider();
+        $container->connect($provider);
+        $service = $container->get($provider->getName());
+        $this->assertInstanceOf(LegacyService::class, $service, 'Must return instance of LegacyService');
+        $this->assertEquals($name, $service->getName(), 'Must inject name from config');
+        $this->assertEquals($container, $service->getContainer(), 'Must inject container by setter');
+    }
 }

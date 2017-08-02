@@ -13,6 +13,13 @@ class Container {
         }
     }
 
+    public function connect(ProviderInterface $provider) {
+        $this->initializers[$provider->getName()] = function () use ($provider) {
+            $this->inject($provider);
+            return $provider->provide();
+        };
+    }
+
     public function register($name, $initializer) {
         if ($initializer instanceof Value) {
             $this->services[$name] = $initializer->getValue();
