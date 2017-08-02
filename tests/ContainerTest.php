@@ -60,7 +60,7 @@ class ContainerTest extends TestCase {
         );
         $provider = new LegacyProvider();
         $container->connect($provider);
-        $service = $container->get($provider->getName());
+        $service = $container->get($provider->getServiceName());
         $this->assertInstanceOf(LegacyService::class, $service, 'Must return instance of LegacyService');
         $this->assertEquals($name, $service->getName(), 'Must inject name from config');
         $this->assertEquals($container, $service->getContainer(), 'Must inject container by setter');

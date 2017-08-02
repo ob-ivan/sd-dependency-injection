@@ -2,13 +2,13 @@
 
 namespace SD\DependencyInjection;
 
-trait AutoDeclareTrait {
+trait AutoDeclarerTrait {
     private $prefixAutoDeclare = 'autoDeclare';
 
     /**
      * @return string[]
     **/
-    public function declareDependencies() {
+    public function autoDeclareDependencies() {
         $class = new \ReflectionClass($this);
         $deps = [];
         foreach ($class->getDefaultProperties () as $name => $value) {

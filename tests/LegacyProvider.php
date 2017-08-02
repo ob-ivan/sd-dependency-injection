@@ -1,28 +1,27 @@
 <?php
 namespace tests;
 
-use SD\DependencyInjection\AutoDeclareTrait;
+use SD\DependencyInjection\AutoDeclarerInterface;
+use SD\DependencyInjection\AutoDeclarerTrait;
 use SD\DependencyInjection\ContainerAwareTrait;
 use SD\DependencyInjection\DeclarerInterface;
 use SD\DependencyInjection\ProviderInterface;
 
-class LegacyProvider implements DeclarerInterface, ProviderInterface {
-    use AutoDeclareTrait {
-        declareDependencies as autoDeclareDependencies;
-    }
+class LegacyProvider implements AutoDeclarerInterface, DeclarerInterface, ProviderInterface {
+    use AutoDeclarerTrait;
     use ContainerAwareTrait;
 
     private $name;
 
     public function declareDependencies() {
-        return array_merge($this->autoDeclareDependencies(), ['name']);
+        return ['name'];
     }
 
     public function setName(string $name) {
         $this->name = $name;
     }
 
-    public function getName(): string {
+    public function getServiceName(): string {
         return 'helloWorld';
     }
 

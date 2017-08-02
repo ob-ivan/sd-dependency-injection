@@ -14,7 +14,7 @@ class Container {
     }
 
     public function connect(ProviderInterface $provider) {
-        $this->initializers[$provider->getName()] = function () use ($provider) {
+        $this->initializers[$provider->getServiceName()] = function () use ($provider) {
             $this->inject($provider);
             return $provider->provide();
         };
@@ -55,9 +55,7 @@ class Container {
             $parameters = $this->getParameterValues(new \ReflectionFunction($consumer));
             return $consumer(...$parameters);
         } else {
-            if ($consumer instanceof DeclarerInterface) {
-                $consumer = $this->injectDeclared($consumer);
-            }
+            $consumer = $this->injectDeclarer($consumer);
             return $consumer;
         }
     }
@@ -83,14 +81,22 @@ class Container {
         } else {
             $instance = $initializer;
         }
-        if ($instance instanceof DeclarerInterface) {
-            $instance = $this->injectDeclared($instance);
-        }
+        $instance = $this->injectDeclarer($instance);
         return $instance;
     }
 
-    private function injectDeclared(DeclarerInterface $object) {
-        foreach ($object->declareDependencies() as $name) {
+    private function injectDeclarer($object) {
+        if ($object instanceof AutoDeclarerInterface) {
+            $object = $this->injectByNames($object, $object->autoDeclareDependencies());
+        }
+        if ($object instanceof DeclarerInterface) {
+            $object = $this->injectByNames($object, $object->declareDependencies());
+        }
+        return $object;
+    }
+
+    private function injectByNames($object, array $names) {
+        foreach ($names as $name) {
             $setter = 'set' . implode('', array_map('ucfirst', explode('_', $name)));
             if (!method_exists($object, $setter)) {
                 throw new Exception("Object declared $name dependency, but setter method $setter was not found");

@@ -2,6 +2,6 @@
 namespace SD\DependencyInjection;
 
 interface ProviderInterface {
-    public function getName(): string;
+    public function getServiceName(): string;
     public function provide();
 }
