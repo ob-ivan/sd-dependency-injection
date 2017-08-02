@@ -32,12 +32,20 @@ class ContainerTest extends TestCase {
         $this->assertEquals($container, $service->getContainer(), 'Must inject container by setter');
     }
 
-    public function testDetectCyclicDependencies() {
+    public function testDetectCyclicDependenciesSimple() {
         $container = new Container();
         $container->register('a', function ($b) { return 1; });
         $container->register('b', function ($a) { return 2; });
         $this->expectException(Exception::class);
         $container->get('a');
+    }
+
+    public function testDetectCyclicDependenciesComplex() {
+        $container = new Container();
+        $container->register('currencyStore', CurrencyStore::class);
+        $container->connect(new CurrencyProvider());
+        $this->expectException(Exception::class);
+        $container->get('currency');
     }
 
     public function testExtend() {
