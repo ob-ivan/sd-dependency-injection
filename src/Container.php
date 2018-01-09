@@ -2,6 +2,8 @@
 namespace SD\DependencyInjection;
 
 class Container {
+    const SELF_NAME = 'container';
+
     private $initializers = [];
     private $services = [];
 
@@ -10,9 +12,16 @@ class Container {
     **/
     private $usedNames = [];
 
+    /**
+     * Instantiate a container with a starting set of services.
+     *
+     *  @param  [string $name => mixed $service] $config
+     *  @param  string $selfName is DEPRECATED
+    **/
     public function __construct(array $config = [], $selfName = '') {
         $this->services = $config;
         if ($selfName) {
+            trigger_error('selfName parameter is deprecated, "' . self::SELF_NAME . '" will be used instead');
             $this->services[$selfName] = $this;
         }
     }
