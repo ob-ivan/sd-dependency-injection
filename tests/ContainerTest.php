@@ -87,5 +87,6 @@ class ContainerTest extends TestCase {
         $consumer = $mergedContainer->inject(new MultiConsumer());
         $this->assertSame($post, $consumer->getPost(), 'Must inject post from post container');
         $this->assertSame($request, $consumer->getRequest(), 'Must inject request from request container');
+        $this->assertSame($mergedContainer, $consumer->getContainer(), 'Must inject merged container');
     }
 }

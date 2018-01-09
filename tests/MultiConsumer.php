@@ -1,9 +1,15 @@
 <?php
 namespace tests;
 
+use SD\DependencyInjection\AutoDeclarerInterface;
+use SD\DependencyInjection\AutoDeclarerTrait;
+use SD\DependencyInjection\ContainerAwareTrait;
 use SD\DependencyInjection\DeclarerInterface;
 
-class MultiConsumer implements DeclarerInterface {
+class MultiConsumer implements AutoDeclarerInterface, DeclarerInterface {
+    use AutoDeclarerTrait;
+    use ContainerAwareTrait;
+
     private $post;
     private $request;
 
@@ -25,5 +31,9 @@ class MultiConsumer implements DeclarerInterface {
 
     public function getRequest() {
         return $this->request;
+    }
+
+    public function getContainer() {
+        return $this->container;
     }
 }
