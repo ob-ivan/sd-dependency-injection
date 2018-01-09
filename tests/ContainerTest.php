@@ -17,12 +17,9 @@ class ContainerTest extends TestCase {
 
     public function testRegisterClassName() {
         $name = 'Padme';
-        $container = new Container(
-            [
-                'name' => $name,
-            ],
-            'container'
-        );
+        $container = new Container([
+            'name' => $name,
+        ]);
         $serviceName = 'helloWorld';
         $className = HelloWorldService::class;
         $container->register($serviceName, $className);
@@ -51,12 +48,9 @@ class ContainerTest extends TestCase {
     public function testExtend() {
         $name1 = 'Jar Jar Binks';
         $name2 = 'Palpatine';
-        $container = new Container(
-            [
-                'name' => $name1,
-            ],
-            'container'
-        );
+        $container = new Container([
+            'name' => $name1,
+        ]);
         $serviceName = 'helloWorld';
         $container->register($serviceName, HelloWorldService::class);
         $container->extend($serviceName, function ($helloWorld) use ($name2) {
@@ -69,12 +63,9 @@ class ContainerTest extends TestCase {
 
     public function testConnect() {
         $name = 'Luke Skywalker';
-        $container = new Container(
-            [
-                'name' => $name,
-            ],
-            'container'
-        );
+        $container = new Container([
+            'name' => $name,
+        ]);
         $provider = new LegacyProvider();
         $container->connect($provider);
         $service = $container->get($provider->getServiceName());

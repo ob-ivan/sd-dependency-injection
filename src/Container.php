@@ -2,6 +2,8 @@
 namespace SD\DependencyInjection;
 
 class Container {
+    const SELF_NAME = 'container';
+
     private $initializers = [];
     private $services = [];
 
@@ -10,9 +12,16 @@ class Container {
     **/
     private $usedNames = [];
 
+    /**
+     * Instantiate a container with a starting set of services.
+     *
+     *  @param  [string $name => mixed $service] $config
+     *  @param  string $selfName is DEPRECATED
+    **/
     public function __construct(array $config = [], $selfName = '') {
         $this->services = $config;
         if ($selfName) {
+            trigger_error('selfName parameter is deprecated, "' . self::SELF_NAME . '" will be used instead', E_USER_DEPRECATED);
             $this->services[$selfName] = $this;
         }
     }
@@ -137,6 +146,9 @@ class Container {
      *  @return mixed
     **/
     private function getRecursive(string $name) {
+        if ($name === self::SELF_NAME) {
+            return $this;
+        }
         if (!isset($this->services[$name])) {
             if (in_array($name, $this->usedNames)) {
                 throw new Exception("Cyclic dependency found while resolving $name");
