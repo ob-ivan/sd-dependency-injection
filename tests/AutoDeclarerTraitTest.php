@@ -7,7 +7,7 @@ use SD\DependencyInjection\Container;
 
 class AutoDeclarerTraitTest extends TestCase {
     public function testDeclareDependencies() {
-        $container = new Container([], 'container');
+        $container = new Container([]);
         $service = $container->produce(AutoDeclarerService::class);
         $this->assertEquals($container, $service->getContainer(), 'Must inject container with auto declare');
     }
