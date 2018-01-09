@@ -82,4 +82,19 @@ class ContainerTest extends TestCase {
         $this->assertEquals($name, $service->getName(), 'Must inject name from config');
         $this->assertEquals($container, $service->getContainer(), 'Must inject container by setter');
     }
+
+    public function testMerge() {
+        $post = new \stdClass();
+        $request = new \stdClass();
+        $postContainer = new Container([
+            'post' => $post,
+        ]);
+        $requestContainer = new Container([
+            'request' => $request,
+        ]);
+        $mergedContainer = Container::merge($postContainer, $requestContainer);
+        $consumer = $mergedContainer->inject(new MultiConsumer());
+        $this->assertSame($post, $consumer->getPost(), 'Must inject post from post container');
+        $this->assertSame($request, $consumer->getRequest(), 'Must inject request from request container');
+    }
 }
