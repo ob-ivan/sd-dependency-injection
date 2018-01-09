@@ -21,7 +21,7 @@ class Container {
     public function __construct(array $config = [], $selfName = '') {
         $this->services = $config;
         if ($selfName) {
-            trigger_error('selfName parameter is deprecated, "' . self::SELF_NAME . '" will be used instead');
+            trigger_error('selfName parameter is deprecated, "' . self::SELF_NAME . '" will be used instead', E_USER_DEPRECATED);
             $this->services[$selfName] = $this;
         }
     }
