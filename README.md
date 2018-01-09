@@ -42,6 +42,12 @@ You can set a name which will be used to refer to container itself:
 $container = new SD\DependencyInjection\Container([], 'container');
 ```
 
+If you have several containers, you can create a new one by merging them:
+
+```php
+$mergedContainer = SD\DependencyInjection\Container::merge($container1, $container2);
+```
+
 Registering services
 --------------------
 Services are registered with ServiceInitializers:
