@@ -1,5 +1,4 @@
 <?php
-
 namespace SD\DependencyInjection;
 
 class Container {
@@ -59,6 +58,10 @@ class Container {
     public function inject($consumer) {
         $this->usedNames = [];
         return $this->injectRecursive($consumer);
+    }
+
+    public static function merge(self ...$containers): self {
+        return new self();
     }
 
     // Public for compatibility mode only.
