@@ -146,6 +146,9 @@ class Container {
      *  @return mixed
     **/
     private function getRecursive(string $name) {
+        if ($name === self::SELF_NAME) {
+            return $this;
+        }
         if (!isset($this->services[$name])) {
             if (in_array($name, $this->usedNames)) {
                 throw new Exception("Cyclic dependency found while resolving $name");
