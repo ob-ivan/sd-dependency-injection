@@ -172,8 +172,11 @@ This way defining a consumer in a following way will tell a container to inject 
 into it --- or to throw an exception if it's not available.
 
 ```php
-class ExampleConsumer implements SD\DependencyInjeciton\AutoDeclarerInterface {
-    use SD\DependencyInjeciton\AutoDeclarerTrait;
+use SD\DependencyInjection\AutoDeclarerInterface;
+use SD\DependencyInjection\AutoDeclarerTrait;
+
+class ExampleConsumer implements AutoDeclarerInterface {
+    use AutoDeclarerTrait;
     use ExampleAwareTrait;
 
     // An example way to access an example service instance.
@@ -188,8 +191,10 @@ Service providers
 You can encapsulate a service's common name further by putting it into a provider.
 
 ```php
-// This provides a correspondance between the service instance and its common name.
-class ExampleProvider implements SD\DependencyInjection\ProviderInterface {
+use SD\DependencyInjection\ProviderInterface;
+
+// This provides a correspondence between the service instance and its common name.
+class ExampleProvider implements ProviderInterface {
     public function getServiceName(): string {
         return 'example'; // the common name
     }
