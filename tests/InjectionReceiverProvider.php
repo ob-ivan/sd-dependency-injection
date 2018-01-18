@@ -8,7 +8,7 @@ class InjectionReceiverProvider implements ProviderInterface {
         return 'service';
     }
 
-    public function provide($param) {
+    public function provide(string $param = '') {
         return (object)[
             'param' => $param,
         ];
