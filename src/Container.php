@@ -29,7 +29,7 @@ class Container {
     public function connect(ProviderInterface $provider) {
         $this->register($provider->getServiceName(), function () use ($provider) {
             $this->injectRecursive($provider);
-            return $provider->provide();
+            return $this->inject([$provider, 'provide']);
         });
     }
 
@@ -90,7 +90,7 @@ class Container {
 
     private function injectRecursive($consumer) {
         if (is_callable($consumer)) {
-            $parameters = $this->getParameterValues(new \ReflectionFunction($consumer));
+            $parameters = $this->getParameterValues(new \ReflectionFunction(\Closure::fromCallable($consumer)));
             return $consumer(...$parameters);
         } else {
             $consumer = $this->injectDeclarer($consumer);

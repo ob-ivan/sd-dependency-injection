@@ -89,4 +89,14 @@ class ContainerTest extends TestCase {
         $this->assertSame($request, $consumer->getRequest(), 'Must inject request from request container');
         $this->assertSame($mergedContainer, $consumer->getContainer(), 'Must inject merged container');
     }
+
+    public function testInjectIntoProvider() {
+        $param = 'R2D2';
+        $container = new Container([
+            'param' => $param,
+        ]);
+        $container->connect(new InjectionReceiverProvider());
+        $service = $container->get('service');
+        $this->assertSame($param, $service->param, 'Must inject param into service');
+    }
 }
