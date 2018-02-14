@@ -1,16 +1,18 @@
 <?php
-
 namespace SD\DependencyInjection;
 
-trait ContainerAwareTrait {
-    private $autoDeclareContainer = 'container';
+trait ContainerAwareTrait
+{
+    protected $autoDeclareContainer = 'container';
     private $container;
 
-    public function setContainer(Container $container) {
+    public function setContainer(Container $container)
+    {
         $this->container = $container;
     }
 
-    private function getContainer(): Container {
+    protected function getContainer(): Container
+    {
         return $this->container;
     }
 }
