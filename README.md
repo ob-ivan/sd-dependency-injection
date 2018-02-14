@@ -155,15 +155,22 @@ we recommend to define an `AwareTrait` for each service you define.
 Here's a sample code:
 
 ```php
-trait ExampleAwareTrait {
+trait ExampleAwareTrait
+{
     // Here's the magic. Create a field named starting with $autoDeclare and containing the service's
     // common name as a value. Don't forget to import AutoDeclarerTrait!
-    private $autoDeclareExample = 'example';
+    protected $autoDeclareExample = 'example';
     private $example;
 
     // Setter name must match the common name.
     public function setExample(ExampleService $example) {
         $this->example = $example;
+    }
+
+    // An example way to access an example service instance.
+    protected function getExample()
+    {
+        return $this->example;
     }
 }
 ```
@@ -175,13 +182,14 @@ into it --- or to throw an exception if it's not available.
 use SD\DependencyInjection\AutoDeclarerInterface;
 use SD\DependencyInjection\AutoDeclarerTrait;
 
-class ExampleConsumer implements AutoDeclarerInterface {
+class ExampleConsumer implements AutoDeclarerInterface
+{
     use AutoDeclarerTrait;
     use ExampleAwareTrait;
 
-    // An example way to access an example service instance.
-    public function getExample() {
-        return $this->example;
+    public function run()
+    {
+        return $this->getExample()->doSomething();
     }
 }
 ```
@@ -194,12 +202,15 @@ You can encapsulate a service's common name further by putting it into a provide
 use SD\DependencyInjection\ProviderInterface;
 
 // This provides a correspondence between the service instance and its common name.
-class ExampleProvider implements ProviderInterface {
-    public function getServiceName(): string {
+class ExampleProvider implements ProviderInterface
+{
+    public function getServiceName(): string
+    {
         return 'example'; // the common name
     }
 
-    public function provide() {
+    public function provide()
+    {
         return new ExampleService();
     }
 }
